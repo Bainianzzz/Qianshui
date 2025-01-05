@@ -1,0 +1,4 @@
+tqdm~=4.67.1
+transformers~=4.47.1
+accelerate~=1.2.1
+faster-whisper~=1.1.0

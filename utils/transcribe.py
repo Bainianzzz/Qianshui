@@ -30,6 +30,7 @@ def transcribe(
 
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 
+    output = "output/srt/".join(output)
     with open(output, "w", encoding="utf-8") as file:
         file.write("")
 
@@ -38,4 +39,3 @@ def transcribe(
         transcription2srt(index, segment, output)
 
     print("Transcription saved to transcription.srt")
-    # print(f'transcription finished, costs：{(time.time() - start_time) / 60:.2f} minutes')
