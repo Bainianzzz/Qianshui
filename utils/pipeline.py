@@ -30,8 +30,28 @@ class Pipeline:
                 multilingual: bool = False,
                 mode: str = "api",
                 model_name: str = default["Qwen"],
-                output_language: str = "zh",
-                output: str = "translation.srt"):
+                output_language: str = "zh"):
+        """'
+        :param file: an audio file or media file to be transcribed/translated
+        :param srt_file: a srt file to be translated
+        :param model_size: the model which will be used to transcribe
+            See https://github.com/SYSTRAN/faster-whisper/blob/master/faster_whisper/transcribe.py#L604
+        :param compute_type: Type to use for computation.
+            See https://opennmt.net/CTranslate2/quantization.html.
+        :param output_dir: the directory where the output will be saved
+        :param beam_size:
+        :param chunk_length:
+        :param batch_size:
+        :param vad_parameters:
+        :param multilingual:
+            See https://github.com/SYSTRAN/faster-whisper/blob/master/faster_whisper/transcribe.py#L753
+        :param mode: the way to finish the translation
+            "api": use the model's API (please set the API_KEY ad your system variable),
+            "local": download and run model on your own computer
+        :param model_name: the model which is used to translate
+        :param output_language: the language which will be translated to
+        :return: None
+        """
 
         if file is None and srt_file is None:
             raise RuntimeError('File or srt_file must be specified')
@@ -53,14 +73,12 @@ class Pipeline:
 
             if self.task == 'translate':
                 translate(input_file=transcription, mode=mode, model_name=model_name,
-                          output_language=output_language, output_dir=output_dir,
-                          output=output)
+                          output_language=output_language, output_dir=output_dir)
         else:
             if self.task == 'translate':
                 logger.info(f'Pipeline will directly translate the {srt_file}')
                 translate(input_file=srt_file, mode=mode, model_name=model_name,
-                          output_language=output_language, output_dir=output_dir,
-                          output=output)
+                          output_language=output_language, output_dir=output_dir)
             else:
                 logger.info(f'{srt_file} already exists, no need to transcribe')
                 pass

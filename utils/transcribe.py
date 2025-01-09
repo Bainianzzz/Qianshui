@@ -45,7 +45,7 @@ def transcribe(
 
     logger.info("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 
-    output_dir = "output/transcription/" if output_dir is None else output_dir
+    output_dir = "output/transcription/" if output_dir is None else os.path.join(output_dir, 'transcription')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     file_name = os.path.splitext(os.path.basename(audio_file))[0] + '_transcription.srt'

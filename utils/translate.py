@@ -52,8 +52,7 @@ def translate(input_file: str = None,
               mode: str = "api",
               model_name: str = default["Qwen"],
               output_language: str = "zh",
-              output_dir: str = None,
-              output: str = "translation.srt",
+              output_dir: str = None
               ):
     with open(input_file, 'r', encoding='utf-8') as file:
         srt_list = file.readlines()
@@ -69,11 +68,11 @@ def translate(input_file: str = None,
     for index, r in enumerate(response):
         srt_list[2 + 3 * index] = r + '\n'
 
-    output_dir = "output/translation/" if output_dir is None else output_dir
+    output_dir = "output/translation/" if output_dir is None else os.path.join(output_dir, 'translation')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     file_name = os.path.splitext(os.path.basename(input_file))[0] + f'_{output_language}.srt'
-    output_path = os.path.join(output_dir, file_name) if output_dir is not None else output
+    output_path = os.path.join(output_dir, file_name)
     with open(output_path, "w", encoding="utf-8") as file:
         file.writelines(srt_list)
 
@@ -84,4 +83,4 @@ def translate(input_file: str = None,
 
 if __name__ == '__main__':
     input_file = 'output/transcription/example_transcription.srt'
-    translate(input_file, mode="api", output_dir="output/translation",output_language="jp")
+    translate(input_file, mode="api", output_dir="output/translation", output_language="jp")
