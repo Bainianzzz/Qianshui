@@ -4,7 +4,7 @@ from tqdm import tqdm
 from transformers import pipeline
 from openai import OpenAI
 
-from meta.translate import *
+from utils import *
 
 
 def chat_local(content: list[str] = None,
@@ -49,31 +49,39 @@ def chat_api(content: list[str] = None,
 
 
 def translate(input_file: str = None,
-              mode: str = "local",
+              mode: str = "api",
               model_name: str = default["Qwen"],
               output_language: str = "zh",
               output_dir: str = None,
-              output_file: str = default["output_file"],
+              output: str = "translation.srt",
               ):
     with open(input_file, 'r', encoding='utf-8') as file:
         srt_list = file.readlines()
     content = [srt_list[i].replace('\n', '') for i in range(2, len(srt_list), 3)]
     if mode == "local":
+        logger.info('Translating with local model')
         response = chat_local(content, output_language, model_name=model_name[mode])
     elif mode == "api":
+        logger.info('Translating with api')
         response = chat_api(content, output_language, model_name=model_name[mode])
     else:
         raise Exception("mode must be local or api")
     for index, r in enumerate(response):
         srt_list[2 + 3 * index] = r + '\n'
 
-    if output_dir is not None and not os.path.exists(output_dir):
+    output_dir = "output/translation/" if output_dir is None else output_dir
+    if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    output_path = os.path.join(output_dir, output_file) if output_dir is not None else output_file
+    file_name = os.path.splitext(os.path.basename(input_file))[0] + f'_{output_language}.srt'
+    output_path = os.path.join(output_dir, file_name) if output_dir is not None else output
     with open(output_path, "w", encoding="utf-8") as file:
         file.writelines(srt_list)
 
+    output_path = os.path.abspath(output_path)
+    logger.info(f'Translation saved to {output_path}')
+    return output_path
+
 
 if __name__ == '__main__':
-    input_file = '../tmp/transcription.srt'
-    translate(input_file, output_dir="../tmp")
+    input_file = 'output/transcription/example_transcription.srt'
+    translate(input_file, mode="api", output_dir="output/translation",output_language="jp")
