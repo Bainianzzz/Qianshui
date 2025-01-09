@@ -31,7 +31,7 @@ def chat_api(content: list[str] = None,
              output_language: str = "zh",
              model_name: str = default["Qwen"]["api"]):
     client = OpenAI(
-        api_key=os.getenv("ALIYUN_API"),
+        api_key=os.getenv("API_KEY"),
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
 
